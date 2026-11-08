@@ -1,4 +1,3 @@
-/* ===== NỘI DUNG: DATA[số chapter], đếm từ 0 (0 = chapter 01 ... 9 = chapter 10) ===== */
 const NAMES = { mc: "MC", xavier: "Xavier" };
 const DATA = {
   0: {
@@ -144,7 +143,6 @@ const overlay = $("#overlay"), menu = $("#menu"), nums = $("#nums");
 const titleEl = $("#title"), content = $("#content"), prev = $("#prev"), next = $("#next");
 let chap = 0;
 
-// tạo 10 nút số
 for (let i = 0; i < 10; i++) {
   const b = document.createElement("button");
   b.className = "num";
@@ -163,7 +161,6 @@ function render() {
   [...nums.children].forEach((b, i) => b.classList.toggle("active", i === chap));
 }
 
-// mũi tên: trái hiện khi số 01 bị khuất, phải ẩn khi tới số 10
 function arrows() {
   prev.hidden = nums.scrollLeft < nums.children[0].offsetWidth * 0.5;
   next.hidden = nums.scrollLeft + nums.clientWidth >= nums.scrollWidth - 4;
@@ -172,10 +169,8 @@ nums.addEventListener("scroll", arrows, { passive: true });
 prev.onclick = () => nums.scrollBy({ left: -nums.clientWidth * 0.8 });
 next.onclick = () => nums.scrollBy({ left: nums.clientWidth * 0.8 });
 
-// cỡ chữ tỉ lệ theo bề rộng khung
 new ResizeObserver(() => { menu.style.setProperty("--u", menu.clientWidth / 100 + "px"); arrows(); }).observe(menu);
 
-// mở / đóng popup
 const close = () => overlay.classList.remove("open");
 $("#btn-record").onclick = () => overlay.classList.add("open");
 overlay.addEventListener("click", e => { if (!e.target.closest("#menu")) close(); });
@@ -184,13 +179,11 @@ addEventListener("keydown", e => e.key === "Escape" && close());
 
 render();
 
-/* ===== HIỆU ỨNG ===== */
 const stage = $(".stage"), logo = $("#logo");
 const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const rnd = (a, b) => a + Math.random() * (b - a);
 const flash = (el, cls, ms) => { el.classList.add(cls); setTimeout(() => el.classList.remove(cls), ms); };
 
-// bật màn hình CRT khi tải xong, kèm glitch nhẹ
 function boot() {
   if (calm) return stage.classList.add("live");
   stage.classList.add("boot");
@@ -198,7 +191,6 @@ function boot() {
 stage.addEventListener("animationend", e => { if (e.animationName === "crt") stage.classList.replace("boot", "live"); });
 document.readyState === "complete" ? boot() : addEventListener("load", boot);
 
-// thỉnh thoảng glitch ở màn hình chính; glitch logo khi popup mở
 (function loop() {
   setTimeout(() => { if (!calm && stage.classList.contains("live") && !overlay.classList.contains("open")) flash(stage, "glitch", 400); loop(); }, rnd(10000, 25000));
 })();
@@ -206,7 +198,6 @@ document.readyState === "complete" ? boot() : addEventListener("load", boot);
   setTimeout(() => { if (!calm && overlay.classList.contains("open")) flash(logo, "g", 320); loopLogo(); }, rnd(2200, 5000));
 })();
 
-// đốm sáng nhỏ trôi nhẹ như đom đóm; thêm đốm cyan/hồng quanh logo khi popup mở
 const cv = $("#fx"), cx = cv.getContext("2d"), P = [];
 let W, H, D;
 const fit = () => { D = Math.min(devicePixelRatio || 1, 2); W = cv.width = innerWidth * D; H = cv.height = innerHeight * D; };
@@ -239,7 +230,6 @@ function tick(now) {
 }
 if (!calm) requestAnimationFrame(tick);
 
-// nhạc nền (assets/music.mp3) + nút bật/tắt. Trình duyệt thường chặn tự phát nên sẽ phát ở lần chạm đầu tiên.
 function music() {
   const bgm = new Audio("assets/music.mp3"), snd = $("#snd");
   let userOff = false;
